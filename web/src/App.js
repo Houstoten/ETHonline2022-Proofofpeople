@@ -5,6 +5,7 @@ const App = () => {
   const [currentAccount, setCurrentAccount] = useState('');
   const [name, setName] = useState('');
   const [details, setDetails] = useState('');
+  const [company, setCompany] = useState('');
 
   const connectWallet = async () => {
     try {
@@ -69,8 +70,15 @@ const App = () => {
 				<input
 					type="text"
 					value={details}
-					placeholder='Tell us about yourself..'
+					placeholder='Your role'
 					onChange={e => setDetails(e.target.value)}
+				/>
+
+        <input
+					type="text"
+					value={company}
+					placeholder='Current Company'
+					onChange={e => setCompany(e.target.value)}
 				/>
 
 				<div className="button-container">
