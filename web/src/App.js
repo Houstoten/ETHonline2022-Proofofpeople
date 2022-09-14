@@ -94,11 +94,21 @@ const App = () => {
     <div className="App">
       <div className="container">
         <div className="header-container">
-          <header>
+          {/* <header>
             <div className="left">
               <p className="title">Proof of Protocol</p>
               <p className="subtitle">Make you presence on-chain</p>
               <p>Current Address: {currentAccount}</p>
+            </div>
+          </header> */}
+          <header>
+            <div className="left">
+              <p className="title">Proof of Protocol</p>
+              <p className="subtitle">Make you presence on-chain</p>
+            </div>
+
+            <div className="right">
+              { currentAccount ? <p>{currentAccount.slice(0, 6)}...{currentAccount.slice(-4)} </p> : <p> Not connected </p> }
             </div>
           </header>
         </div>
