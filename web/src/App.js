@@ -3,7 +3,8 @@ import './App.css';
 
 const App = () => {
   const [currentAccount, setCurrentAccount] = useState('');
-    
+  const [name, setName] = useState('');
+  const [details, setDetails] = useState('');
 
   const connectWallet = async () => {
     try {
@@ -51,6 +52,39 @@ const App = () => {
       </button>
     </div>
   );
+
+
+  const renderInputForm = () =>{
+		return (
+			<div className="form-container">
+				<div className="first-row">
+					<input
+						type="text"
+						value={name}
+						placeholder='Enter your name..'
+						onChange={e => setName(e.target.value)}
+					/>
+				</div>
+
+				<input
+					type="text"
+					value={details}
+					placeholder='Tell us about yourself..'
+					onChange={e => setDetails(e.target.value)}
+				/>
+
+				<div className="button-container">
+					<button className='cta-button mint-button' disabled={null} onClick={null}>
+						Mint
+					</button>  
+					<button className='cta-button mint-button' disabled={null} onClick={null}>
+						Set data
+					</button>  
+				</div>
+
+			</div>
+		);
+	}
   
   useEffect(() => {
     checkIfWalletIsConnected();
@@ -70,7 +104,7 @@ const App = () => {
         </div>
         
         {!currentAccount && renderNotConnectedContainer()}
-
+        {currentAccount && renderInputForm()}
         <div className="footer-container">
            <p>Made with ❤️ by POP Team</p>
         </div>
