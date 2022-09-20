@@ -6,13 +6,10 @@ import { Grid, Input, Text } from "@nextui-org/react"
 import { useAccount } from 'wagmi'
 import { NavBar } from '../../components/Navbar';
 
-export async function getServerSideProps() {
-    const friends = new Array(33).fill({}).map((obj, i) => ({ name: "User" + i, address: "0x" + (Math.random() + 1).toString(36).substring(7) + "..." }))
-    return { props: { friends } }
-}
-
-const Home: NextPage<{ friends: { name: string, address: string }[] }> = ({ friends }) => {
+const Home: NextPage<{}> = () => {
     const { address, isConnecting, isDisconnected } = useAccount()
+
+    //TODO create form for user data minting
 
     return (
         <>
