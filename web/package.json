@@ -6,13 +6,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postinstall": "typechain --target=ethers-v5 ./contractAbi/**/*.abi"
   },
   "dependencies": {
     "@maticnetwork/maticjs": "^3.4.0",
     "@maticnetwork/walletconnect-provider": "^0.0.1-beta.1",
     "@nextui-org/react": "^1.0.0-beta.10",
     "@rainbow-me/rainbowkit": "^0.5.3",
+    "@typechain/ethers-v5": "^10.1.0",
     "ethers": "^5.7.1",
     "next": "12.3.0",
     "next-auth": "^4.10.3",
@@ -21,6 +23,7 @@
     "react-dom": "18.2.0",
     "react-icons": "^4.4.0",
     "siwe": "^1.1.6",
+    "typechain": "^8.1.0",
     "wagmi": "^0.6.6"
   },
   "devDependencies": {
