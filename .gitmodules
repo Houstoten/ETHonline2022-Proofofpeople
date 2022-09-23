@@ -1,0 +1,3 @@
+[submodule "popgraph"]
+	path = popgraph
+	url = https://github.com/Houstoten/popgraph
