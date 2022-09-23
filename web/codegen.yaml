@@ -1,0 +1,12 @@
+schema: '../popgraph/schema.graphql'
+documents: './**/*.graphql'
+generates:
+  ./graphqlGenerates.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-react-query
+    config:
+      fetcher: fetch
+      scalars:
+        BigInt: BigInt
