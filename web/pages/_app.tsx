@@ -4,6 +4,11 @@ import { createTheme, NextUIProvider } from "@nextui-org/react"
 import { ThemeProvider as NextThemesProvider } from 'next-themes';
 // import { SessionProvider } from "next-auth/react"
 
+import {
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query'
+
 import '@rainbow-me/rainbowkit/styles.css';
 
 import {
@@ -19,7 +24,7 @@ import { publicProvider } from 'wagmi/providers/public';
 const { chains, provider, webSocketProvider } = configureChains(
   [
     chain.polygonMumbai,
-    // chain.mainnet,
+    chain.mainnet,
     // chain.polygon,
     // chain.optimism,
     // chain.arbitrum,
@@ -75,6 +80,8 @@ const darkTheme = createTheme({
   }
 })
 
+const queryClient = new QueryClient()
+
 function MyApp({ Component, pageProps }: AppProps) {
   return <NextThemesProvider
     defaultTheme="system"
@@ -90,8 +97,10 @@ function MyApp({ Component, pageProps }: AppProps) {
 
           {/* @ts-ignore */}
           {/* <SessionProvider session={pageProps.session} refetchInterval={0}> */}
+          <QueryClientProvider client={queryClient}>
 
-          <Component {...pageProps} />
+            <Component {...pageProps} />
+          </QueryClientProvider>
           {/* </SessionProvider> */}
 
         </RainbowKitProvider>

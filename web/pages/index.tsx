@@ -12,6 +12,8 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount, useSigner, useProvider, useContractWrite, usePrepareContractWrite } from 'wagmi'
 import { NavBar } from '../components/Navbar';
 import { POPbase__factory, POPbase } from '../types/ethers-contracts';
+import { useGetUserTokensQuery } from '../graphqlGenerates';
+import { ConnectionsGrid } from '../components/ConnectionsGrid';
 
 export async function getServerSideProps() {
   const friends = new Array(33).fill({}).map((obj, i) => ({ name: "User" + i, address: "0x" + (Math.random() + 1).toString(36).substring(7) + "..." }))
@@ -44,14 +46,23 @@ const Home: NextPage<{ friends: { name: string, address: string }[] }> = ({ frie
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <NavBar/>
+      <NavBar />
+
+      {/* {address ? (() => {
+        const {data} = useGetUserTokensQuery({endpoint: "https://api.thegraph.com/subgraphs/name/houstoten/popgraph"}, {userId: address.toLowerCase()})
+
+        console.log({data})
+        return null;
+      })() : null} */}
 
       {/* <Button onClick={() => POPbase__factory.connect(POPbaseAddress, signer).mintAndTransfer("0xA8015DF1F65E1f53D491dC1ED35013031AD25034", "https://gateway.pinata.cloud/ipfs/QmbUieYgwpgxs8vyrbAt68GJoa4WX6yP9RdygkCAfzCaFA")}/> */}
       {/* <Button onClick={() => write?.()}/> */}
 
       <div style={{ display: 'flex', justifyContent: 'center' }}>
 
-        <Grid.Container css={{ width: "50%" }} gap={2} justify="flex-start">
+        <ConnectionsGrid address={address} />
+
+        {/* <Grid.Container css={{ width: "50%" }} gap={2} justify="flex-start">
           {friends.map((friend, index) => <Grid key={friend.name} xs={2} sm={3} >
             <Card isPressable >
               <Card.Body css={{ p: 0 }}>
@@ -72,7 +83,7 @@ const Home: NextPage<{ friends: { name: string, address: string }[] }> = ({ frie
               </Card.Footer>
             </Card>
           </Grid>)}
-        </Grid.Container>
+        </Grid.Container> */}
       </div>
     </>
   )

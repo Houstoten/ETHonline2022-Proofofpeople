@@ -1,0 +1,18 @@
+query getUserTokens($userId: ID!) {
+  user(id: $userId) {
+    tokens {
+      tokenID
+      metadataURI
+      creator {
+        id
+      }
+    }
+    created {
+      tokenID
+      metadataURI
+      owner {
+        id
+      }
+    }
+  }
+}
