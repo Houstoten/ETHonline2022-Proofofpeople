@@ -70,7 +70,7 @@ export type GetUserTokensQueryVariables = Exact<{
 }>;
 
 
-export type GetUserTokensQuery = { __typename?: 'GetUserTokens', user?: { __typename?: 'User', tokens: Array<{ __typename?: 'ConnectionNFT', tokenID: BigInt, name?: string | null, description?: string | null, image?: string | null, metadataURI: string, creator: { __typename?: 'User', id: string } }>, created: Array<{ __typename?: 'ConnectionNFT', tokenID: BigInt, name?: string | null, description?: string | null, image?: string | null, metadataURI: string, owner: { __typename?: 'User', id: string } }> } | null };
+export type GetUserTokensQuery = { __typename?: 'GetUserTokens', user?: { __typename?: 'User', tokens: Array<{ __typename?: 'ConnectionNFT', tokenID: BigInt, createdAtTimestamp: BigInt, name?: string | null, description?: string | null, image?: string | null, metadataURI: string, creator: { __typename?: 'User', id: string } }>, created: Array<{ __typename?: 'ConnectionNFT', tokenID: BigInt, createdAtTimestamp: BigInt, name?: string | null, description?: string | null, image?: string | null, metadataURI: string, owner: { __typename?: 'User', id: string } }> } | null };
 
 
 export const GetUserTokensDocument = `
@@ -78,6 +78,7 @@ export const GetUserTokensDocument = `
   user(id: $userId) {
     tokens {
       tokenID
+      createdAtTimestamp
       name
       description
       image
@@ -88,6 +89,7 @@ export const GetUserTokensDocument = `
     }
     created {
       tokenID
+      createdAtTimestamp
       name
       description
       image

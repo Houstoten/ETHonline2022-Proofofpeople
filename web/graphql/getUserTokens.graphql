@@ -2,6 +2,7 @@ query getUserTokens($userId: ID!) {
   user(id: $userId) {
     tokens {
       tokenID
+      createdAtTimestamp
       name
       description
       image
@@ -12,6 +13,7 @@ query getUserTokens($userId: ID!) {
     }
     created {
       tokenID
+      createdAtTimestamp
       name
       description
       image

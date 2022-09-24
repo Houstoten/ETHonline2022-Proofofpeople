@@ -1,9 +1,10 @@
-import { Avatar, Card, Grid, Row, Text } from "@nextui-org/react";
+import { Avatar, Card, Grid, Row, Text, Modal } from "@nextui-org/react";
 import Image from "next/image";
-import { FC, useMemo } from "react";
+import { FC, useMemo, useState } from "react";
 import { useGetUserTokensQuery } from "../graphqlGenerates";
 import * as R from 'ramda'
 import { useEnsAvatar } from 'wagmi'
+import { Timeline, TimelineItem, TimelineSeparator, TimelineConnector, TimelineContent, TimelineDot } from '@mui/lab'
 
 const endpoint = "https://api.thegraph.com/subgraphs/name/houstoten/popgraph"
 
@@ -13,6 +14,7 @@ type ConnectionNFTs = [
         name?: string,
         description?: string,
         image?: string,
+        createdAtTimestamp: string,
         metadataURI: string,
         creator: { id: string }
     },
@@ -21,6 +23,7 @@ type ConnectionNFTs = [
         name?: string,
         description?: string,
         image?: string,
+        createdAtTimestamp: string,
         metadataURI: string,
         owner: { id: string }
     }
@@ -39,8 +42,8 @@ type ConstructFriends = (
     ]
 
 interface Connection {
-            connectionNFTs: ConnectionNFTs,
-            friend: { id: string }
+    connectionNFTs: ConnectionNFTs,
+    friend: { id: string }
 }
 
 interface Friends {
@@ -74,7 +77,7 @@ const constructFriends: ConstructFriends = (address, created, tokens) => {
 const addressEllipsis = (address: string) => address.length ? R.slice(0, 10, address) + "..." + R.slice(-6, -1, address) : address;
 
 const fixIMGForDemo: (img: string) => string = img => {
-    if(img === "https://en.wikipedia.org/wiki/Wave_(gesture)#/media/File:383-waving-hand-1.svg") {
+    if (img === "https://en.wikipedia.org/wiki/Wave_(gesture)#/media/File:383-waving-hand-1.svg") {
         return "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/383-waving-hand-1.svg/1024px-383-waving-hand-1.svg.png"
     }
 
@@ -85,10 +88,12 @@ const UserCard: FC<{ address: string, connections: Array<Connection> }> = ({ add
 
     const { data: avatarData } = useEnsAvatar({ addressOrName: address, chainId: 1 });
 
+    const [modalVisible, setModalVisible] = useState(false)
+
     const mockConnections = [...connections, ...connections, ...connections, ...connections]
 
     return <Grid key={address} xs={4}>
-        <Card isPressable >
+        <Card isPressable onClick={() => setModalVisible(true)} >
             <Card.Header>
                 <Text b>{addressEllipsis(address)}</Text>
             </Card.Header>
@@ -104,16 +109,63 @@ const UserCard: FC<{ address: string, connections: Array<Connection> }> = ({ add
             <Card.Divider />
             <Card.Footer css={{ justifyItems: "flex-start" }}>
                 <Row wrap="wrap" align="center">
-                    {connections.slice(0, 2).map(connection => <div style={{display: 'flex', position: 'relative', width: '60px'}}>
+                    {connections.slice(0, 2).map(connection => <div style={{ display: 'flex', position: 'relative', width: '60px' }}>
                         {/* @ts-ignore */}
-                        <Avatar bordered src={fixIMGForDemo(connection.connectionNFTs[0].image)}/>
+                        <Avatar bordered src={fixIMGForDemo(connection.connectionNFTs[0].image)} />
                         {/* @ts-ignore */}
-                        <Avatar bordered style={{position: 'absolute', left: '15px'}} src={fixIMGForDemo(connection.connectionNFTs[1].image)}/>
+                        <Avatar bordered style={{ position: 'absolute', left: '15px' }} src={fixIMGForDemo(connection.connectionNFTs[1].image)} />
                     </div>)}
-                    {connections.length - 2 > 0 && <Avatar style={{marginLeft: 'auto'}} text={`+${connections.length - 2}`}/>}
+                    {connections.length - 2 > 0 && <Avatar style={{ marginLeft: 'auto' }} text={`+${connections.length - 2}`} />}
                 </Row>
             </Card.Footer>
         </Card>
+        <Modal
+            closeButton
+            blur
+            scroll
+            width="50%"
+            aria-labelledby="modal-title"
+            open={modalVisible}
+            onClose={() => setModalVisible(false)}
+        >
+            <Modal.Header>{address}</Modal.Header>
+            <Modal.Body>
+                <Grid.Container gap={2}>
+                    <Grid xs={6} css={{ display: 'flex', flexDirection: 'column' }}>
+                        <div style={{ position: 'sticky', top: "24px" }}>
+                            <Avatar squared bordered css={{ width: '50%', height: 'auto' }} src={avatarData ?? `https://avatars.dicebear.com/api/pixel-art/${address}.svg`} />
+                            <Text h3 css={{ alignSelf: 'start' }}>Name Surname</Text>
+                            <Text css={{ alignSelf: 'start', textAlign: 'left' }}>Lorem ipsum some other data dont want to include but anywauy, noone writes so long description</Text>
+                        </div>
+                    </Grid>
+                    <Grid xs={6}>
+                        <Timeline>
+                            <TimelineItem>
+                                <TimelineSeparator>
+                                    <TimelineDot />
+                                    <TimelineConnector />
+                                </TimelineSeparator>
+                                <TimelineContent></TimelineContent>
+                            </TimelineItem>
+                            {connections.map((connection, idx) => <TimelineItem style={{ height: '100px' }}>
+                                <TimelineSeparator>
+                                    <TimelineDot color="inherit" style={{ margin: '0 0 10px 0', boxShadow: 'none' }}>
+                                        <div style={{ display: 'flex', position: 'relative', width: '60px' }}>
+                                            {/* @ts-ignore */}
+                                            <Avatar bordered src={fixIMGForDemo(connection.connectionNFTs[0].image)} />
+                                            {/* @ts-ignore */}
+                                            <Avatar bordered style={{ position: 'absolute', left: '15px' }} src={fixIMGForDemo(connection.connectionNFTs[1].image)} />
+                                        </div>
+                                    </TimelineDot>
+                                    {idx !== connections.length - 1 && <TimelineConnector />}
+                                </TimelineSeparator>
+                                <TimelineContent style={{marginTop: '8px'}}>{new Date(R.max(parseInt(connection.connectionNFTs[0].createdAtTimestamp), parseInt(connection.connectionNFTs[1].createdAtTimestamp)) * 1000).toLocaleDateString("en-US")}</TimelineContent>
+                            </TimelineItem>)}
+                        </Timeline>
+                    </Grid>
+                </Grid.Container>
+            </Modal.Body>
+        </Modal>
     </Grid>
 }
 
@@ -128,7 +180,7 @@ export const ConnectionsGrid: FC<{ address?: string }> = ({ address }) => {
     const [friends, requests] = useMemo(() => user && address ? constructFriends(address, user.created, user.tokens) : [[], []], [user, address])
 
     //@ts-ignore
-    const _friends: Friends = R.reduce((acc, connection) => ({...acc, [connection.friend.id]: [...(acc[connection.friend.id] ?? []), connection]}), {}, friends)
+    const _friends: Friends = R.reduce((acc, connection) => ({ ...acc, [connection.friend.id]: [...(acc[connection.friend.id] ?? []), connection] }), {}, friends)
 
     return <Grid.Container css={{ width: "50%" }} gap={2} justify="flex-start">
         {Object.entries(_friends).map(([friendAddress, connections]) => <UserCard address={friendAddress} connections={connections} />)}
