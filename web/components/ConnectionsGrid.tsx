@@ -31,8 +31,8 @@ type ConnectionNFTs = [
 
 type ConstructFriends = (
     address: string,
-    created: Array<{ tokenID: BigInt, metadataURI: string, owner: { id: string } }>,
-    tokens: Array<{ tokenID: BigInt, metadataURI: string, creator: { id: string } }>
+    created: Array<{ tokenID: BigInt, metadataURI: string, createdAtTimestamp: string, owner: { id: string } }>,
+    tokens: Array<{ tokenID: BigInt, metadataURI: string, createdAtTimestamp: string, creator: { id: string } }>
 ) => [
         Array<{
             connectionNFTs: ConnectionNFTs,
