@@ -177,6 +177,7 @@ export const ConnectionsGrid: FC<{ address?: string }> = ({ address }) => {
 
     const { user } = data ?? {};
 
+    //@ts-ignore
     const [friends, requests] = useMemo(() => user && address ? constructFriends(address, user.created, user.tokens) : [[], []], [user, address])
 
     //@ts-ignore
