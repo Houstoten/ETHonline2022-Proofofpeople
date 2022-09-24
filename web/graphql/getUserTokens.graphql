@@ -2,6 +2,9 @@ query getUserTokens($userId: ID!) {
   user(id: $userId) {
     tokens {
       tokenID
+      name
+      description
+      image
       metadataURI
       creator {
         id
@@ -9,6 +12,9 @@ query getUserTokens($userId: ID!) {
     }
     created {
       tokenID
+      name
+      description
+      image
       metadataURI
       owner {
         id

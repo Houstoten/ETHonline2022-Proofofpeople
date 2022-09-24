@@ -39,8 +39,11 @@ export type ConnectionNft = {
   contentURI: Scalars['String'];
   createdAtTimestamp: Scalars['BigInt'];
   creator: User;
+  description?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
+  image?: Maybe<Scalars['String']>;
   metadataURI: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
   owner: User;
   tokenID: Scalars['BigInt'];
 };
@@ -67,7 +70,7 @@ export type GetUserTokensQueryVariables = Exact<{
 }>;
 
 
-export type GetUserTokensQuery = { __typename?: 'GetUserTokens', user?: { __typename?: 'User', tokens: Array<{ __typename?: 'ConnectionNFT', tokenID: BigInt, metadataURI: string, creator: { __typename?: 'User', id: string } }>, created: Array<{ __typename?: 'ConnectionNFT', tokenID: BigInt, metadataURI: string, owner: { __typename?: 'User', id: string } }> } | null };
+export type GetUserTokensQuery = { __typename?: 'GetUserTokens', user?: { __typename?: 'User', tokens: Array<{ __typename?: 'ConnectionNFT', tokenID: BigInt, name?: string | null, description?: string | null, image?: string | null, metadataURI: string, creator: { __typename?: 'User', id: string } }>, created: Array<{ __typename?: 'ConnectionNFT', tokenID: BigInt, name?: string | null, description?: string | null, image?: string | null, metadataURI: string, owner: { __typename?: 'User', id: string } }> } | null };
 
 
 export const GetUserTokensDocument = `
@@ -75,6 +78,9 @@ export const GetUserTokensDocument = `
   user(id: $userId) {
     tokens {
       tokenID
+      name
+      description
+      image
       metadataURI
       creator {
         id
@@ -82,6 +88,9 @@ export const GetUserTokensDocument = `
     }
     created {
       tokenID
+      name
+      description
+      image
       metadataURI
       owner {
         id
