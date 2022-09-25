@@ -41,6 +41,7 @@ const Home: NextPage<{}> = () => {
   //@ts-ignore
   const [friends, requests] = useMemo(() => user && address ? constructFriends(address, user.created, user.tokens) : [[], []], [user, address])
 
+  //@ts-ignore
   const _friends: Friends = R.reduce((acc, connection) => ({ ...acc, [connection.friend.id]: [...(acc[connection.friend.id] ?? []), connection] }), {}, friends)
 
   const { data: avatarData } = useEnsAvatar({ addressOrName: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045", chainId: 1 });
