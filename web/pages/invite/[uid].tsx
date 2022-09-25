@@ -150,8 +150,6 @@ const Home: NextPage<{}> = () => {
                 <Grid.Container gap={2}>
                     <Grid xs={6}>
                         <div style={{ width: "100%", display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', justifyContent: "center" }}>
-                            {/* <QRCode width="100%" height="100%" fgColor={isDark ? "white" : "black"} bgColor='transparent' value={`http://localhost:3000/invite/${address}`} /> */}
-                            {/* <Text css={{textAlign: 'center'}}>This QRCode represents YOUR account! Let your friend scan it!</Text> */}
                             <div style={{ width: "50%", display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', justifyContent: "center" }}>
 
                                 <div style={{ display: 'inline-flex', alignItems: 'center', gap: '10px' }}>
@@ -176,7 +174,7 @@ const Home: NextPage<{}> = () => {
                     </Grid>
                     <Grid xs={6} css={{ alignItems: 'center' }}>
                         <div style={{ width: "100%", height: '50%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
-                            {address && <QRCode width="100%" height="100%" fgColor={isDark ? "white" : "black"} bgColor='transparent' value={`http://localhost:3000/invite/${address}`} />}
+                            {address && <QRCode width="100%" height="100%" fgColor={isDark ? "white" : "black"} bgColor='transparent' value={`${process.env.NEXT_PUBLIC_DOMAIN}/invite/${address}`} />}
                             <Text css={{ textAlign: 'center' }}>This QRCode represents YOUR account! Let your friend scan it!</Text>
                         </div>
                     </Grid>

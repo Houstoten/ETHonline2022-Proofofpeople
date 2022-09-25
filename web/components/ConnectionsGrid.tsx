@@ -50,7 +50,7 @@ interface Friends {
     [key: string]: Array<Connection>
 }
 
-const constructFriends: ConstructFriends = (address, created, tokens) => {
+export const constructFriends: ConstructFriends = (address, created, tokens) => {
 
     if (!created.length || !tokens.length) {
         return [[], tokens]
