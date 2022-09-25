@@ -107,9 +107,9 @@ export const UserCardModalBody: FC<{ address: string, connections: Array<Connect
                     <TimelineDot color="inherit" style={{ margin: '0 0 10px 0', boxShadow: 'none' }}>
                         <div style={{ display: 'flex', position: 'relative', width: '60px' }}>
                             {/* @ts-ignore */}
-                            <Avatar bordered src={fixIMGForDemo(connection.connectionNFTs[0].image)} />
+                            <Avatar bordered src={fixIMGForDemo(connection.connectionNFTs[0].image)?.includes('pinata') ? toIpfsLink(fixIMGForDemo(connection.connectionNFTs[0].image)) : fixIMGForDemo(connection.connectionNFTs[0].image)} />
                             {/* @ts-ignore */}
-                            <Avatar bordered style={{ position: 'absolute', left: '15px' }} src={fixIMGForDemo(connection.connectionNFTs[1].image)} />
+                            <Avatar bordered style={{ position: 'absolute', left: '15px' }} src={fixIMGForDemo(connection.connectionNFTs[1].image)?.includes('pinata') ? toIpfsLink(fixIMGForDemo(connection.connectionNFTs[1].image)) : fixIMGForDemo(connection.connectionNFTs[1].image)} />
                         </div>
                     </TimelineDot>
                     {idx !== connections.length - 1 && <TimelineConnector />}
