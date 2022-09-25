@@ -71,9 +71,9 @@ const Home: NextPage<{}> = () => {
           <ConnectionsGrid address={address} />
           : <div style={{ height: "70%", display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '10px' }}>
             <div style={{ display: 'flex' }}>
-              <Text h2>Show this QR-code to your friend to '</Text>
+              <Text h2>Show this QR-code to your friend to "</Text>
               <Text h2 css={{ textGradient: "45deg, $yellow600 -20%, $pink600 50%", }}>mint-a-moment</Text>
-              <Text h2>' 🌈</Text>
+              <Text h2>" 🌈</Text>
 
             </div>
             {address && <QRCode width="100%" height="100%" fgColor={isDark ? "white" : "black"} bgColor='transparent' value={`${process.env.NEXT_PUBLIC_DOMAIN}/invite/${address}`} />}
