@@ -109,7 +109,7 @@ const UserCard: FC<{ address: string, connections: Array<Connection> }> = ({ add
             <Card.Divider />
             <Card.Footer css={{ justifyItems: "flex-start" }}>
                 <Row wrap="wrap" align="center">
-                    {connections.slice(0, 2).map(connection => <div style={{ display: 'flex', position: 'relative', width: '60px' }}>
+                    {connections.slice(0, 2).map((connection, idx) => <div key={idx} style={{ display: 'flex', position: 'relative', width: '60px' }}>
                         {/* @ts-ignore */}
                         <Avatar bordered src={fixIMGForDemo(connection.connectionNFTs[0].image)} />
                         {/* @ts-ignore */}
@@ -147,7 +147,7 @@ const UserCard: FC<{ address: string, connections: Array<Connection> }> = ({ add
                                 </TimelineSeparator>
                                 <TimelineContent></TimelineContent>
                             </TimelineItem>
-                            {connections.map((connection, idx) => <TimelineItem style={{ height: '100px' }}>
+                            {connections.map((connection, idx) => <TimelineItem key={idx} style={{ height: '100px' }}>
                                 <TimelineSeparator>
                                     <TimelineDot color="inherit" style={{ margin: '0 0 10px 0', boxShadow: 'none' }}>
                                         <div style={{ display: 'flex', position: 'relative', width: '60px' }}>
@@ -184,7 +184,7 @@ export const ConnectionsGrid: FC<{ address?: string }> = ({ address }) => {
     const _friends: Friends = R.reduce((acc, connection) => ({ ...acc, [connection.friend.id]: [...(acc[connection.friend.id] ?? []), connection] }), {}, friends)
 
     return <Grid.Container css={{ width: "50%" }} gap={2} justify="flex-start">
-        {Object.entries(_friends).map(([friendAddress, connections]) => <UserCard address={friendAddress} connections={connections} />)}
+        {Object.entries(_friends).map(([friendAddress, connections]) => <UserCard key={friendAddress} address={friendAddress} connections={connections} />)}
         {/* {friends.map((friend, index) => <Grid key={friend.name} xs={2} sm={3} >
             <Card isPressable >
                 <Card.Body css={{ p: 0 }}>

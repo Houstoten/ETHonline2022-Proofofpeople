@@ -75,7 +75,7 @@ export const NavBar: FC<{}> = () => {
                         </Dropdown.Trigger>
                         <Dropdown.Menu>
                             {/* @ts-ignore */}
-                            {requests.map(request => <Dropdown.Item icon={<Avatar size="xs" src={metadata[request.tokenID.toString()]?.image} />}>
+                            {requests.map(request => <Dropdown.Item key={request.tokenID} icon={<Avatar size="xs" src={metadata[request.tokenID.toString()]?.image} />}>
                                 <Link href={`${process.env.NEXT_PUBLIC_DOMAIN}/invite/${request.creator.id}`}>
 
                                     {/* @ts-ignore */}
