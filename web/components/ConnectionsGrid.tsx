@@ -5,6 +5,7 @@ import { useGetUserTokensQuery } from "../graphqlGenerates";
 import * as R from 'ramda'
 import { useEnsAvatar } from 'wagmi'
 import { Timeline, TimelineItem, TimelineSeparator, TimelineConnector, TimelineContent, TimelineDot } from '@mui/lab'
+import { toIpfsLink } from "./Navbar";
 
 const endpoint = "https://api.thegraph.com/subgraphs/name/houstoten/popgraph"
 
@@ -146,9 +147,9 @@ const UserCard: FC<{ address: string, connections: Array<Connection> }> = ({ add
                 <Row wrap="wrap" align="center">
                     {connections.slice(0, 2).map((connection, idx) => <div key={idx} style={{ display: 'flex', position: 'relative', width: '60px' }}>
                         {/* @ts-ignore */}
-                        <Avatar bordered src={fixIMGForDemo(connection.connectionNFTs[0].image)} />
+                        <Avatar bordered src={fixIMGForDemo(connection.connectionNFTs[0].image).includes('pinata') ? toIpfsLink(fixIMGForDemo(connection.connectionNFTs[0].image)) : fixIMGForDemo(connection.connectionNFTs[0].image)} />
                         {/* @ts-ignore */}
-                        <Avatar bordered style={{ position: 'absolute', left: '15px' }} src={fixIMGForDemo(connection.connectionNFTs[1].image)} />
+                        <Avatar bordered style={{ position: 'absolute', left: '15px' }} src={fixIMGForDemo(connection.connectionNFTs[1].image).includes('pinata') ? toIpfsLink(fixIMGForDemo(connection.connectionNFTs[1].image)) : fixIMGForDemo(connection.connectionNFTs[1].image)} />
                     </div>)}
                     {connections.length - 2 > 0 && <Avatar style={{ marginLeft: 'auto' }} text={`+${connections.length - 2}`} />}
                 </Row>

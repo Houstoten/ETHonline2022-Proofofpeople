@@ -15,6 +15,8 @@ import Image from 'next/image';
 
 const endpoint = "https://api.thegraph.com/subgraphs/name/houstoten/popgraph"
 
+export const toIpfsLink = (pinataLink: string) => "https://ipfs.io/ipfs/" + pinataLink.split("/").at(-1)
+
 export const NavBar: FC<{}> = () => {
 
     const { address, isConnecting, isDisconnected } = useAccount()
@@ -36,7 +38,7 @@ export const NavBar: FC<{}> = () => {
 
     useEffect(() => {
         requests.forEach(request => {
-            fetch(request.metadataURI).then(response => response.json()).then(resp => setMetadata(metadata => ({ ...metadata, [request.tokenID.toString()]: resp })))
+            fetch(toIpfsLink(request.metadataURI)).then(response => response.json()).then(resp => setMetadata(metadata => ({ ...metadata, [request.tokenID.toString()]: resp })))
         })
     }, [requests])
 
@@ -75,7 +77,7 @@ export const NavBar: FC<{}> = () => {
                         </Dropdown.Trigger>
                         <Dropdown.Menu>
                             {/* @ts-ignore */}
-                            {requests.map(request => <Dropdown.Item key={request.tokenID} icon={<Avatar size="xs" src={metadata[request.tokenID.toString()]?.image} />}>
+                            {requests.map(request => <Dropdown.Item key={request.tokenID} icon={<Avatar size="xs" src={metadata[request.tokenID.toString()]?.image?.includes("pinata") ? toIpfsLink(metadata[request.tokenID.toString()]?.image) : metadata[request.tokenID.toString()]?.image } />}>
                                 <Link href={`${process.env.NEXT_PUBLIC_DOMAIN}/invite/${request.creator.id}`}>
 
                                     {/* @ts-ignore */}
