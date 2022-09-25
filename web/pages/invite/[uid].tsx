@@ -168,7 +168,7 @@ const Home: NextPage<{}> = () => {
                                         </div>
                                     </Card.Body>
                                 </Card>
-                                <Button onClick={onPublishClick} disabled={loading} css={{ width: '100%' }}>Send friendship request</Button>
+                                <Button onClick={onPublishClick} disabled={loading} css={{ width: '100%' }}>Submit memory moment</Button>
                             </div>
                         </div>
                     </Grid>

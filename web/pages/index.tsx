@@ -13,30 +13,35 @@ import { useAccount, useSigner, useProvider, useContractWrite, usePrepareContrac
 import { NavBar } from '../components/Navbar';
 import { POPbase__factory, POPbase } from '../types/ethers-contracts';
 import { useGetUserTokensQuery } from '../graphqlGenerates';
-import { ConnectionsGrid } from '../components/ConnectionsGrid';
+import { ConnectionsGrid, constructFriends, Friends } from '../components/ConnectionsGrid';
+import * as R from 'ramda'
+import { useMemo } from 'react';
 
-export async function getServerSideProps() {
-  const friends = new Array(33).fill({}).map((obj, i) => ({ name: "User" + i, address: "0x" + (Math.random() + 1).toString(36).substring(7) + "..." }))
-  return { props: { friends } }
-}
+import dynamic from 'next/dynamic'
+const QRCode = dynamic(() => import('qrcode.react').then(imp => imp.QRCodeSVG), { ssr: false })
+
+// export async function getServerSideProps() {
+//   const friends = new Array(33).fill({}).map((obj, i) => ({ name: "User" + i, address: "0x" + (Math.random() + 1).toString(36).substring(7) + "..." }))
+//   return { props: { friends } }
+// }
 
 const POPbaseAddress = "0xa1a889ed18a9e2aac65b1592b3b16ae3b10d046d"
 
-const Home: NextPage<{ friends: { name: string, address: string }[] }> = ({ friends }) => {
+const endpoint = "https://api.thegraph.com/subgraphs/name/houstoten/popgraph"
+
+const Home: NextPage<{}> = () => {
   const { address, isConnecting, isDisconnected } = useAccount()
 
-  // const {data: signer} = useSigner()
+  const { isDark } = useTheme()
 
-  // const provider = useProvider()
+  const { data } = useGetUserTokensQuery({ endpoint }, { userId: address?.toLowerCase?.() ?? "" }, { enabled: !!address })
 
-  // const {config} = usePrepareContractWrite({
-  //   addressOrName: POPbaseAddress,
-  //   contractInterface: POPbase__factory.createInterface(),
-  //   functionName: "mintAndTransfer",
-  //   args: ["0x51349f6D250A50AA73b599EcB953f008BEF4FCbC", "https://gateway.pinata.cloud/ipfs/QmQ2p3sR8n6tPTGEp9isyzz1QTaeYtkPZUFvxGPeLAxY6s"]
-  // })
+  const { user } = data ?? {};
 
-  // const { data, isLoading, isSuccess, write } = useContractWrite(config)
+  //@ts-ignore
+  const [friends, requests] = useMemo(() => user && address ? constructFriends(address, user.created, user.tokens) : [[], []], [user, address])
+
+  const _friends: Friends = R.reduce((acc, connection) => ({ ...acc, [connection.friend.id]: [...(acc[connection.friend.id] ?? []), connection] }), {}, friends)
 
   return (
     <>
@@ -58,9 +63,22 @@ const Home: NextPage<{ friends: { name: string, address: string }[] }> = ({ frie
       {/* <Button onClick={() => POPbase__factory.connect(POPbaseAddress, signer).mintAndTransfer("0xA8015DF1F65E1f53D491dC1ED35013031AD25034", "https://gateway.pinata.cloud/ipfs/QmbUieYgwpgxs8vyrbAt68GJoa4WX6yP9RdygkCAfzCaFA")}/> */}
       {/* <Button onClick={() => write?.()}/> */}
 
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', height: 'calc(100vh - 76px)', alignItems: 'center' }}>
 
-        <ConnectionsGrid address={address} />
+        {Object.entries(_friends).length ?
+          <ConnectionsGrid address={address} />
+          : <div style={{ height: "70%", display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '10px' }}>
+            <div style={{display:'flex'}}>
+              <Text h2>Show this QR-code to your friend to '</Text>
+              <Text h2 css={{ textGradient: "45deg, $yellow600 -20%, $pink600 50%", }}>mint-a-moment</Text>
+              <Text h2>' 🌈</Text>
+
+            </div>
+            {address && <QRCode width="100%" height="100%" fgColor={isDark ? "white" : "black"} bgColor='transparent' value={`${process.env.NEXT_PUBLIC_DOMAIN}/invite/${address}`} />}
+
+            <Text h3>Or scan theirs 📷</Text>
+          </div>}
+        {/* <ConnectionsGrid address={address} /> */}
 
         {/* <Grid.Container css={{ width: "50%" }} gap={2} justify="flex-start">
           {friends.map((friend, index) => <Grid key={friend.name} xs={2} sm={3} >

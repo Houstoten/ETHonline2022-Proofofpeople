@@ -46,7 +46,7 @@ interface Connection {
     friend: { id: string }
 }
 
-interface Friends {
+export interface Friends {
     [key: string]: Array<Connection>
 }
 
