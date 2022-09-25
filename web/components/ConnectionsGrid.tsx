@@ -1,6 +1,6 @@
 import { Avatar, Card, Grid, Row, Text, Modal } from "@nextui-org/react";
 import Image from "next/image";
-import { FC, useMemo, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import { useGetUserTokensQuery } from "../graphqlGenerates";
 import * as R from 'ramda'
 import { useEnsAvatar } from 'wagmi'
@@ -107,9 +107,9 @@ export const UserCardModalBody: FC<{ address: string, connections: Array<Connect
                     <TimelineDot color="inherit" style={{ margin: '0 0 10px 0', boxShadow: 'none' }}>
                         <div style={{ display: 'flex', position: 'relative', width: '60px' }}>
                             {/* @ts-ignore */}
-                            <Avatar bordered src={fixIMGForDemo(connection.connectionNFTs[0].image)?.includes('pinata') ? toIpfsLink(fixIMGForDemo(connection.connectionNFTs[0].image)) : fixIMGForDemo(connection.connectionNFTs[0].image)} />
+                            {process.browser && <Avatar bordered src={fixIMGForDemo(connection.connectionNFTs[0].image)?.includes('pinata') ? toIpfsLink(fixIMGForDemo(connection.connectionNFTs[0].image)) : fixIMGForDemo(connection.connectionNFTs[0].image)} />}
                             {/* @ts-ignore */}
-                            <Avatar bordered style={{ position: 'absolute', left: '15px' }} src={fixIMGForDemo(connection.connectionNFTs[1].image)?.includes('pinata') ? toIpfsLink(fixIMGForDemo(connection.connectionNFTs[1].image)) : fixIMGForDemo(connection.connectionNFTs[1].image)} />
+                            {process.browser && <Avatar bordered style={{ position: 'absolute', left: '15px' }} src={fixIMGForDemo(connection.connectionNFTs[1].image)?.includes('pinata') ? toIpfsLink(fixIMGForDemo(connection.connectionNFTs[1].image)) : fixIMGForDemo(connection.connectionNFTs[1].image)} />}
                         </div>
                     </TimelineDot>
                     {idx !== connections.length - 1 && <TimelineConnector />}
@@ -125,6 +125,26 @@ const UserCard: FC<{ address: string, connections: Array<Connection> }> = ({ add
     const { data: avatarData } = useEnsAvatar({ addressOrName: address, chainId: 1 });
 
     const [modalVisible, setModalVisible] = useState(false)
+    //@ts-ignore
+
+    const [_connections, setConnections] = useState([])
+
+    useEffect(() => {
+        Promise.all(connections.map(async (connection) => ({
+            ...connection, connectionNFTs: await Promise.all(connection.connectionNFTs.map(async (connectionItem) => {
+                if(connectionItem.image){
+                    return connectionItem
+                }
+
+                const res = await fetch(connectionItem.metadataURI).then(res => res.json())
+
+                return {...connectionItem, ...res}
+            }))
+            //@ts-ignore
+        }))).then(setConnections)
+    }, [connections])
+
+    console.log({_connections})
 
     const mockConnections = [...connections, ...connections, ...connections, ...connections]
 
@@ -145,13 +165,13 @@ const UserCard: FC<{ address: string, connections: Array<Connection> }> = ({ add
             <Card.Divider />
             <Card.Footer css={{ justifyItems: "flex-start" }}>
                 <Row wrap="wrap" align="center">
-                    {connections.slice(0, 2).map((connection, idx) => <div key={idx} style={{ display: 'flex', position: 'relative', width: '60px' }}>
+                    {_connections.slice(0, 2).map((connection, idx) => <div key={idx} style={{ display: 'flex', position: 'relative', width: '60px' }}>
                         {/* @ts-ignore */}
                         <Avatar bordered src={fixIMGForDemo(connection.connectionNFTs[0].image)?.includes('pinata') ? toIpfsLink(fixIMGForDemo(connection.connectionNFTs[0].image)) : fixIMGForDemo(connection.connectionNFTs[0].image)} />
                         {/* @ts-ignore */}
                         <Avatar bordered style={{ position: 'absolute', left: '15px' }} src={fixIMGForDemo(connection.connectionNFTs[1].image)?.includes('pinata') ? toIpfsLink(fixIMGForDemo(connection.connectionNFTs[1].image)) : fixIMGForDemo(connection.connectionNFTs[1].image)} />
                     </div>)}
-                    {connections.length - 2 > 0 && <Avatar style={{ marginLeft: 'auto' }} text={`+${connections.length - 2}`} />}
+                    {_connections.length - 2 > 0 && <Avatar style={{ marginLeft: 'auto' }} text={`+${_connections.length - 2}`} />}
                 </Row>
             </Card.Footer>
         </Card>
@@ -166,7 +186,7 @@ const UserCard: FC<{ address: string, connections: Array<Connection> }> = ({ add
         >
             <Modal.Header>{address}</Modal.Header>
             <Modal.Body>
-                <UserCardModalBody address={address} connections={connections} avatarData={avatarData?.toString() ?? null} />
+                <UserCardModalBody address={address} connections={_connections} avatarData={avatarData?.toString() ?? null} />
             </Modal.Body>
         </Modal>
     </Grid>

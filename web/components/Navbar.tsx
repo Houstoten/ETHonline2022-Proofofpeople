@@ -15,7 +15,7 @@ import Image from 'next/image';
 
 const endpoint = "https://api.thegraph.com/subgraphs/name/houstoten/popgraph"
 
-export const toIpfsLink = (pinataLink: string) => "https://ipfs.io/ipfs/" + pinataLink.split("/")?.at?.(-1) ?? ""
+export const toIpfsLink = (pinataLink: string) => "https://ipfs.io/ipfs/" + pinataLink.split("/")?.at?.(-1)
 
 export const NavBar: FC<{}> = () => {
 
