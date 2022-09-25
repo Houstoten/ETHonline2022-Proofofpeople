@@ -84,6 +84,41 @@ const fixIMGForDemo: (img: string) => string = img => {
     return img
 }
 
+export const UserCardModalBody: FC<{ address: string, connections: Array<Connection>, avatarData: string | null, fullName?: string, description?: string }> = ({ address, connections, avatarData, fullName = "Name Surname", description = "Lorem ipsum some other data dont want to include but anywauy, noone writes so long description" }) => <Grid.Container gap={2}>
+    <Grid xs={6} css={{ display: 'flex', flexDirection: 'column' }}>
+        <div style={{ position: 'sticky', top: "24px" }}>
+            <Avatar squared bordered css={{ width: '50%', height: 'auto' }} src={avatarData ?? `https://avatars.dicebear.com/api/pixel-art/${address}.svg`} />
+            <Text h3 css={{ alignSelf: 'start', textGradient: "45deg, $yellow600 -20%, $pink600 50%" }}>{fullName}</Text>
+            <Text css={{ alignSelf: 'start', textAlign: 'left' }}>{description}</Text>
+        </div>
+    </Grid>
+    <Grid xs={6}>
+        <Timeline>
+            <TimelineItem>
+                <TimelineSeparator>
+                    <TimelineDot />
+                    <TimelineConnector />
+                </TimelineSeparator>
+                <TimelineContent></TimelineContent>
+            </TimelineItem>
+            {connections.map((connection, idx) => <TimelineItem key={idx} style={{ height: '100px' }}>
+                <TimelineSeparator>
+                    <TimelineDot color="inherit" style={{ margin: '0 0 10px 0', boxShadow: 'none' }}>
+                        <div style={{ display: 'flex', position: 'relative', width: '60px' }}>
+                            {/* @ts-ignore */}
+                            <Avatar bordered src={fixIMGForDemo(connection.connectionNFTs[0].image)} />
+                            {/* @ts-ignore */}
+                            <Avatar bordered style={{ position: 'absolute', left: '15px' }} src={fixIMGForDemo(connection.connectionNFTs[1].image)} />
+                        </div>
+                    </TimelineDot>
+                    {idx !== connections.length - 1 && <TimelineConnector />}
+                </TimelineSeparator>
+                <TimelineContent style={{ marginTop: '8px', width: '10px' }}>{new Date(R.max(parseInt(connection.connectionNFTs[0].createdAtTimestamp), parseInt(connection.connectionNFTs[1].createdAtTimestamp)) * 1000).toLocaleDateString("en-US")}</TimelineContent>
+            </TimelineItem>)}
+        </Timeline>
+    </Grid>
+</Grid.Container>
+
 const UserCard: FC<{ address: string, connections: Array<Connection> }> = ({ address, connections }) => {
 
     const { data: avatarData } = useEnsAvatar({ addressOrName: address, chainId: 1 });
@@ -130,40 +165,7 @@ const UserCard: FC<{ address: string, connections: Array<Connection> }> = ({ add
         >
             <Modal.Header>{address}</Modal.Header>
             <Modal.Body>
-                <Grid.Container gap={2}>
-                    <Grid xs={6} css={{ display: 'flex', flexDirection: 'column' }}>
-                        <div style={{ position: 'sticky', top: "24px" }}>
-                            <Avatar squared bordered css={{ width: '50%', height: 'auto' }} src={avatarData ?? `https://avatars.dicebear.com/api/pixel-art/${address}.svg`} />
-                            <Text h3 css={{ alignSelf: 'start' }}>Name Surname</Text>
-                            <Text css={{ alignSelf: 'start', textAlign: 'left' }}>Lorem ipsum some other data dont want to include but anywauy, noone writes so long description</Text>
-                        </div>
-                    </Grid>
-                    <Grid xs={6}>
-                        <Timeline>
-                            <TimelineItem>
-                                <TimelineSeparator>
-                                    <TimelineDot />
-                                    <TimelineConnector />
-                                </TimelineSeparator>
-                                <TimelineContent></TimelineContent>
-                            </TimelineItem>
-                            {connections.map((connection, idx) => <TimelineItem key={idx} style={{ height: '100px' }}>
-                                <TimelineSeparator>
-                                    <TimelineDot color="inherit" style={{ margin: '0 0 10px 0', boxShadow: 'none' }}>
-                                        <div style={{ display: 'flex', position: 'relative', width: '60px' }}>
-                                            {/* @ts-ignore */}
-                                            <Avatar bordered src={fixIMGForDemo(connection.connectionNFTs[0].image)} />
-                                            {/* @ts-ignore */}
-                                            <Avatar bordered style={{ position: 'absolute', left: '15px' }} src={fixIMGForDemo(connection.connectionNFTs[1].image)} />
-                                        </div>
-                                    </TimelineDot>
-                                    {idx !== connections.length - 1 && <TimelineConnector />}
-                                </TimelineSeparator>
-                                <TimelineContent style={{marginTop: '8px'}}>{new Date(R.max(parseInt(connection.connectionNFTs[0].createdAtTimestamp), parseInt(connection.connectionNFTs[1].createdAtTimestamp)) * 1000).toLocaleDateString("en-US")}</TimelineContent>
-                            </TimelineItem>)}
-                        </Timeline>
-                    </Grid>
-                </Grid.Container>
+                <UserCardModalBody address={address} connections={connections} avatarData={avatarData?.toString() ?? null} />
             </Modal.Body>
         </Modal>
     </Grid>
